@@ -60,7 +60,7 @@ If you run into any issues you can't resolve:
 
 ## Test your project
 
-Execute `dbt build`. If it works, you are done.
+Execute `dbt run`. If it works, you are done.
 
 # Submission
 
@@ -71,6 +71,6 @@ Execute `dbt build`. If it works, you are done.
 2) Submit the URL to your GitHub repository (the fork, that is) on Moodle under "Assignment - Week 1"
 
 ## Deadline
-Because we need to ensure that you have a 100% working environment, I'd like to ask you to get this done by End of Day Thursday 22 Jan.
+Because we need to ensure that you have a 100% working environment and will need time for some buffer fixing prolems, I'd like to ask you to get this done by **End of Day Thursday 22 Jan.**
 
 Good Luck!
