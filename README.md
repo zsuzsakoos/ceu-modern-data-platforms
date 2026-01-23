@@ -35,7 +35,7 @@ dbt init --skip-profile-setup airbnb
 
 Once done, drag and drop the `profiles.yml` file you downloaded to the `airbnb` folder.
 
-Try if dbt works:
+Test if dbt works:
 ```sh
 dbt debug
 ```
@@ -64,10 +64,10 @@ Execute these queries in Snowflake:
 
 ### Exercise 1: Explore the Data
 
-1. Take a look at the AIRBNB database / schemas / tables (you can use the Snowflake UI for this)
-2. Select 10 records from listings - review and understand the data
-3. Select 10 records from hosts - review and understand the data
-4. Select 10 records from reviews - review and understand the data
+1. Take a look at the AIRBNB database/schemas/tables (you can use the Snowflake UI for this).
+2. Select 10 records from listings - review and understand the data.
+3. Select 10 records from hosts - review and understand the data.
+4. Select 10 records from reviews - review and understand the data.
 
 <details>
 <summary>Solution</summary>
@@ -90,8 +90,8 @@ Answer the following questions by writing SQL queries:
 2. What is the minimum and maximum value of the column `MINIMUM_NIGHTS`?
 3. How many records do we have with the "minimum value" of `MINIMUM_NIGHTS`?
 4. What is the minimum and maximum value of `PRICE`?
-5. How many positive, negative and neutral reviews are there?
-6. What percentage of the hosts is superhost?
+5. How many positive, negative, and neutral reviews are there?
+6. What percentage of the hosts are superhosts?
 7. Are there any reviews for non-existent listings?
 
 <details>
@@ -155,12 +155,12 @@ FROM
 
 Create a model which builds on top of our `raw_reviews` table.
 
-1. Call the model `models/src/src_reviews.sql`
-2. Use a CTE (common table expression) to define an alias called `raw_reviews`. This CTE selects every column from the raw reviews table `AIRBNB.RAW.RAW_REVIEWS`
+1. Call the model `models/src/src_reviews.sql`.
+2. Use a CTE (common table expression) to define an alias called `raw_reviews`. This CTE selects every column from the raw reviews table `AIRBNB.RAW.RAW_REVIEWS`.
 3. In your final `SELECT`, select every column and record from `raw_reviews` and rename the following columns:
-   - `date` to `review_date`
-   - `comments` to `review_text`
-   - `sentiment` to `review_sentiment`
+   - `date` to `review_date`.
+   - `comments` to `review_text`.
+   - `sentiment` to `review_sentiment`.
 
 <details>
 <summary>Solution</summary>
@@ -188,11 +188,11 @@ FROM
 
 Create a model which builds on top of our `raw_hosts` table.
 
-1. Call the model `models/src/src_hosts.sql`
-2. Use a CTE (common table expression) to define an alias called `raw_hosts`. This CTE selects every column from the raw hosts table `AIRBNB.RAW.RAW_HOSTS`
+1. Call the model `models/src/src_hosts.sql`.
+2. Use a CTE (common table expression) to define an alias called `raw_hosts`. This CTE selects every column from the raw hosts table `AIRBNB.RAW.RAW_HOSTS`.
 3. In your final `SELECT`, select every column and record from `raw_hosts` and rename the following columns:
-   - `id` to `host_id`
-   - `name` to `host_name`
+   - `id` to `host_id`.
+   - `name` to `host_name`.
 
 <details>
 <summary>Solution</summary>
@@ -285,12 +285,12 @@ Run the model:
 dbt run --select fct_reviews
 ```
 
-Get every review for listing _3176_ (in Snowflake):
+Get every review for listing `3176` (in Snowflake):
 ```sql
 SELECT * FROM "AIRBNB"."DEV"."FCT_REVIEWS" WHERE listing_id=3176;
 ```
 
-Add a new record to the _RAW_ table (in Snowflake):
+Add a new record to the `RAW` table (in Snowflake):
 ```sql
 INSERT INTO "AIRBNB"."RAW"."RAW_REVIEWS"
 VALUES (3176, CURRENT_TIMESTAMP(), 'Zoltan', 'excellent stay!', 'positive');
@@ -307,9 +307,10 @@ dbt run --full-refresh
 ```
 
 ---
+
 ## Logs
 
-Take a look at the `logs` folder (in the `airbnb` folder) to see what SQLs were executed.
+Take a look at the `logs` folder (in the `airbnb` folder) to see what SQL queries were executed.
 
 Also take a look at:
 
@@ -318,9 +319,9 @@ Also take a look at:
 
 ---
 
-### Adding a loaded_at Field
+### Adding a Loaded_at Field
 
-It's always a good idea to add a `loaded_at` field that stores the time of record creation to fct_reviews
+It's always a good idea to add a `loaded_at` field to `fct_reviews` that stores the time of record creation.
 
 In `fct_reviews`, change
 ```sql
@@ -398,7 +399,7 @@ FROM
   src_listings
 ```
 
-Materialize only `dim` models: _(`-s` is short for `--select`)
+Materialize only `dim` models (`-s` is short for `--select`):
 ```sh
 dbt run -s dim
 ```
@@ -408,9 +409,9 @@ dbt run -s dim
 Create a new model in the `models/dim/` folder called `dim_hosts_cleansed.sql`.
 Use a CTE to reference the `src_hosts` model.
 SELECT every column and every record, and add a cleansing step to `host_name`:
-- If `host_name` is not null, keep the original value
-- If `host_name` is null, replace it with the value `'Anonymous'`
-- Use the `NVL(column_name, default_null_value)` function
+- If `host_name` is not null, keep the original value.
+- If `host_name` is null, replace it with the value `'Anonymous'`.
+- Use the `NVL(column_name, default_null_value)` function.
 
 <details>
 <summary>Solution</summary>
@@ -441,9 +442,9 @@ FROM
 
 Create a new model in the `models/dim/` folder called `dim_listings_w_hosts.sql`.
 Join `dim_listings_cleansed` with `dim_hosts_cleansed` to create a denormalized view that includes host information alongside listing data.
-- Use a LEFT JOIN on `host_id`
-- Include all listing fields plus `host_name` and `is_superhost` (renamed to `host_is_superhost`)
-- For `updated_at`, use the `GREATEST()` function to get the most recent update from either table
+- Use a LEFT JOIN on `host_id`.
+- Include all listing fields plus `host_name` and `is_superhost` (renamed to `host_is_superhost`).
+- For `updated_at`, use the `GREATEST()` function to get the most recent update from either table.
 
 <details>
 <summary>Solution</summary>
@@ -479,7 +480,7 @@ LEFT JOIN h ON (h.host_id = l.host_id)
 </details>
 
 ### Exercise 8: View Pipeline Docs
-Take a look at your pipeline by generating the docs and starting the docs server
+Take a look at your pipeline by generating the docs and starting the docs server.
 <details>
 <summary>Solution</summary>
 
@@ -532,11 +533,11 @@ l AS (
 
 ## Seeds
 
-Sometimes you have smaller datasets that are not added to Snowflake by external systems and you want to add them manually. _Seeds_ are here to the rescue:
+Sometimes you have smaller datasets that are not added to Snowflake by external systems and you want to add them manually. Seeds are here to the rescue:
 
-1) Explore the `seed` folder
-2) Run `dbt seeds`
-3) Check for the table on the snowflake UI
+1. Explore the `seed` folder.
+2. Run `dbt seeds`.
+3. Check for the table on the Snowflake UI.
 
 ### Exercise 9: Full Moon Reviews Mart
 
@@ -544,19 +545,19 @@ Create a mart model that analyzes whether reviews were written during a full moo
 
 **Task:** Create `models/mart/mart_fullmoon_reviews.sql` that:
 
-1. References both `fct_reviews` and `seed_full_moon_dates` using the `{{ ref() }}` function
-2. Joins reviews with full moon dates to determine if each review was written the day after a full moon
+1. References both `fct_reviews` and `seed_full_moon_dates` using the `{{ ref() }}` function.
+2. Joins reviews with full moon dates to determine if each review was written the day after a full moon.
 3. Adds a new column `is_full_moon` that contains:
-   - `'full moon'` if the review was written the day after a full moon
-   - `'not full moon'` otherwise
-4. Configure the model as a `table` materialization
+   - `'full moon'` if the review was written the day after a full moon.
+   - `'not full moon'` otherwise.
+4. Configure the model as a `table` materialization.
 
 **Hints:**
-- Use CTEs to reference each model separately
+- Use CTEs to reference each model separately.
 - Snowflake date functions you'll need:
-  - `TO_DATE(timestamp_column)` - Converts a timestamp to a date (strips the time component)
-  - `DATEADD(DAY, 1, date_column)` - Adds 1 day to a date (we want reviews from the day *after* the full moon)
-- The join condition should match the review date with the day after the full moon date
+  - `TO_DATE(timestamp_column)` - Converts a timestamp to a date (strips the time component).
+  - `DATEADD(DAY, 1, date_column)` - Adds 1 day to a date (we want reviews from the day *after* the full moon).
+- The join condition should match the review date with the day after the full moon date.
 
 **Validation:** After running `dbt run --select mart_fullmoon_reviews`, query the result in Snowflake:
 ```sql
@@ -602,18 +603,18 @@ Create an **analysis** to investigate whether full moons affect review sentiment
 
 **Task:** Create `analyses/fullmoon_sentiment.sql` that:
 
-1. References the `mart_fullmoon_reviews` model
-2. Filters out neutral sentiments (only keep `'positive'` and `'negative'`)
+1. References the `mart_fullmoon_reviews` model.
+2. Filters out neutral sentiments (only keep `'positive'` and `'negative'`).
 3. For each `is_full_moon` category, calculate:
-   - `positive_count` - number of positive reviews
-   - `total_count` - total number of reviews (positive + negative)
-   - `positive_percentage` - percentage of positive reviews (e.g., 85.5 for 85.5%)
-4. Returns two rows: one for `'full moon'` and one for `'not full moon'`
+   - `positive_count` - number of positive reviews.
+   - `total_count` - total number of reviews (positive + negative).
+   - `positive_percentage` - percentage of positive reviews (e.g., 85.5 for 85.5%).
+4. Returns two rows: one for `'full moon'` and one for `'not full moon'`.
 
 **Hints:**
-- Use conditional aggregation: `SUM(CASE WHEN condition THEN 1 ELSE 0 END)` counts matching rows
-- Snowflake integer division truncates decimals - multiply by `100.0` to get a percentage
-- Use `ROUND(value, 2)` to round to 2 decimal places for cleaner output
+- Use conditional aggregation: `SUM(CASE WHEN condition THEN 1 ELSE 0 END)` counts matching rows.
+- Snowflake integer division truncates decimals - multiply by `100.0` to get a percentage.
+- Use `ROUND(value, 2)` to round to 2 decimal places for cleaner output.
 
 **Run the analysis:**
 ```sh
@@ -648,7 +649,7 @@ ORDER BY
 
 ## Snapshots
 
-Snapshots implement tracking of slowly changing dimensions: (see [Slowly changing dimension — Type 2 (SCD2)](https://en.wikipedia.org/wiki/Slowly_changing_dimension#Type_2))
+Snapshots implement tracking of slowly changing dimensions (see [Slowly changing dimension — Type 2 (SCD2)](https://en.wikipedia.org/wiki/Slowly_changing_dimension#Type_2)).
 
 ### Snapshots for Listings
 The contents of `snapshots/snapshots.yml`:
@@ -687,7 +688,7 @@ UPDATE AIRBNB.RAW.RAW_LISTINGS SET MINIMUM_NIGHTS=30,
 SELECT * FROM AIRBNB.RAW.RAW_LISTINGS WHERE ID=3176;
 ```
 
-Run `dbt snapshot` again
+Run `dbt snapshot` again.
 
 Let's see the changes:
 ```sql
@@ -701,11 +702,11 @@ dbt build
 ```
 
 ### Exercise 11: SCD Raw Hosts Snapshot
-1) Create a snapshot for `raw_hosts`
-2) run it
-3) update raw_hosts
-4) run snapshot again
-5) validate the change in the snapshot
+1. Create a snapshot for `raw_hosts`.
+2. Run it.
+3. Update `raw_hosts`.
+4. Run snapshot again.
+5. Validate the change in the snapshot.
 <details>
 <summary>Solution</summary>
 
@@ -757,7 +758,7 @@ models:
 ```
 
 ### Singular Data Tests
-#### Singular test for minimum nights check
+#### Singular Test for Minimum Nights Check
 The contents of `tests/dim_listings_minimum_nights.sql`:
 
 ```sql
@@ -802,10 +803,9 @@ dbt test -s mart_fullmoon_reviews
 ```
 
 ### Setting Severity
-Let's test if the sentiment is not null in our sources, but we don't want the test to fail 
-the whole test workflow, only to give a warning.
+Let's test if the sentiment is not null in our sources, but we don't want the test to fail the whole test workflow, only to give a warning.
 
-_Add the sentiment column definition to `models/sources.yml`_:
+Add the sentiment column definition to `models/sources.yml`:
 ```
 sources:
   - name: airbnb
@@ -831,7 +831,7 @@ sources:
 
 Execute `dbt test -s 'source:airbnb.reviews'` to run the test only on this column
 
-### Storing Test Failures:
+### Storing Test Failures
 Add this to your `dbt_project.yml`:
 
 ```
@@ -847,9 +847,9 @@ Here is the link to [Elementary Data](https://www.elementary-data.com/) if you w
 
 Create generic data tests for the `dim_hosts_cleansed` model in `models/schema.yml`:
 
-- `host_id`: Should be unique and not contain null values
-- `host_name`: Should not contain any null values
-- `is_superhost`: Should only contain the values `'t'` and `'f'`
+- `host_id`: Should be unique and not contain null values.
+- `host_name`: Should not contain any null values.
+- `is_superhost`: Should only contain the values `'t'` and `'f'`.
 
 Execute `dbt test` to verify that your tests are passing.
 
@@ -886,9 +886,9 @@ Create a singular test in `tests/consistent_created_at.sql` that checks that the
 Make sure that every `review_date` in `fct_reviews` is more recent than the associated `created_at` in `dim_listings_cleansed`.
 
 **Hints:**
-- Use an INNER JOIN between the two tables on `listing_id`
-- Filter for rows where `created_at > review_date` (these are the problematic records)
-- Remember: singular tests should return rows that FAIL the test
+- Use an INNER JOIN between the two tables on `listing_id`.
+- Filter for rows where `created_at > review_date` (these are the problematic records).
+- Remember: singular tests should return rows that FAIL the test.
 
 <details>
 <summary>Solution</summary>
@@ -918,7 +918,7 @@ Add a config block to the test file (`tests/consistent_created_at.sql`):
 }}
 ```
 
-But when you run this tests, it actially passes, right? Simulate failure by flipping the relation and testing for `l.created_at <= r.review_date`. Once you confirmed that the test would give a warning, **revert this change** so that the test passes again.
+But when you run these tests, it actually passes, right? Simulate failure by flipping the relation and testing for `l.created_at <= r.review_date`. Once you confirmed that the test would give a warning, **revert this change** so that the test passes again.
 
 <details>
 <summary>Solution</summary>
@@ -1002,10 +1002,10 @@ dbt run --select fct_reviews --full-refresh
 
 [dbt-expectations](https://github.com/metaplane/dbt-expectations) is a package that provides additional data quality tests inspired by Great Expectations.
 
-1. Add dbt-expectations to `packages.yml`
-2. Run `dbt deps`
-3. Add a test using [expect_column_to_exist](https://github.com/metaplane/dbt-expectations?tab=readme-ov-file#expect_column_to_exist) on the `review_id` column in `models/schema.yml`
-4. Run `dbt test --select fct_reviews`
+1. Add dbt-expectations to `packages.yml`.
+2. Run `dbt deps`.
+3. Add a test using [expect_column_to_exist](https://github.com/metaplane/dbt-expectations?tab=readme-ov-file#expect_column_to_exist) on the `review_id` column in `models/schema.yml`.
+4. Run `dbt test --select fct_reviews`.
 
 <details>
 <summary>Solution</summary>
@@ -1051,7 +1051,7 @@ Add descriptions directly to the `dim_listings_cleansed` model in `models/schema
           - not_null
 
       - name: host_id
-        description: The hosts's id. References the host table.
+        description: The host's id. References the host table.
         data_tests:
           - not_null
           - relationships:
@@ -1109,12 +1109,12 @@ Add documentation to `dim_hosts_cleansed` in `models/schema.yml`:
 
 1. Add a model-level `description` for `dim_hosts_cleansed`: "Cleansed table which contains Airbnb hosts."
 2. Add descriptions for the following columns:
-   - `host_id`: "Primary key for the host"
-   - `host_name`: "The name of the host"
-   - `is_superhost`: "Whether the host is a superhost"
-3. Create a docs block in `models/docs.md` for the `host_name` column called `dim_hosts_cleansed__host_name` that explains the cleansing process replaces null host names with 'Anonymous'
-4. Reference this docs block in the `host_name` column description
-5. Run `dbt docs generate && dbt docs serve` to view your documentation
+   - `host_id`: "Primary key for the host".
+   - `host_name`: "The name of the host".
+   - `is_superhost`: "Whether the host is a superhost".
+3. Create a docs block in `models/docs.md` for the `host_name` column called `dim_hosts_cleansed__host_name` that explains the cleansing process replaces null host names with 'Anonymous'.
+4. Reference this docs block in the `host_name` column description.
+5. Run `dbt docs generate && dbt docs serve` to view your documentation.
 
 <details>
 <summary>Solution</summary>
