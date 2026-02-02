@@ -22,3 +22,4 @@ SELECT
     END AS minimum_nights
 FROM
     src_listings
+

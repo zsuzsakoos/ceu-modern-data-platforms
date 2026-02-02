@@ -1,12 +1,21 @@
 models:
+  - name: fct_reviews
+    columns:
+      - name: review_id
+        data_tests:
+          - dbt_expectations.expect_column_to_exist
+
   - name: dim_listings_cleansed
+    description: Cleansed table which contains Airbnb listings.
     columns:
       - name: listing_id
+        description: Primary key for the listing
         data_tests:
           - unique
           - not_null
 
       - name: host_id
+        description: The host's id. References the host table.
         data_tests:
           - not_null
           - relationships:
@@ -15,16 +24,35 @@ models:
                 field: host_id
 
       - name: room_type
+        description: Type of the apartment / room
         data_tests:
           - accepted_values:
               arguments:
                 values: ['Entire home/apt',
-                         'Private room',
-                         'Shared room',
-                         'Hotel room']
+                        'Private room',
+                        'Shared room',
+                        'Hotel room']
 
-      - name: fct_reviews
+      - name: minimum_nights
+        description: '{{ doc("dim_listing_cleansed__minimum_nights") }}'
+
+  - name: dim_hosts_cleansed
+    description: Cleansed table which contains Airbnb hosts.
     columns:
-      - name: review_id
+      - name: host_id
+        description: Primary key for the host
         data_tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - unique
+
+      - name: host_name
+        description: '{{ doc("dim_hosts_cleansed__host_name") }}'
+        data_tests:
+          - not_null
+
+      - name: is_superhost
+        description: Whether the host is a superhost
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['t', 'f']
